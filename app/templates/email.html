@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Phishing Detector</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <div class="page-wrapper">
+    <div class="card" id="main-card">
+
+      <div class="header">
+        <div class="shield-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="1.8"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <polyline points="9 12 11 14 15 10"/>
+          </svg>
+        </div>
+        <div>
+          <h1>Phishing detector</h1>
+          <p class="subtitle">// paste email content to scan for threats</p>
+        </div>
+      </div>
+
+      <form action="/predict_email" method="POST" id="scan-form">
+        <p class="field-label">Email content</p>
+        <div class="textarea-wrap">
+          <textarea
+            name="email"
+            id="email-input"
+            placeholder="Paste the full email body here — headers, links, and all…"
+            required
+          ></textarea>
+          <span class="char-count" id="char-count">0 chars</span>
+        </div>
+
+        <div class="form-row">
+          <button type="button" class="btn" onclick="clearForm()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6l-1 14H6L5 6"/>
+              <path d="M10 11v6M14 11v6"/>
+            </svg>
+            Clear
+          </button>
+          <button type="submit" class="btn btn-primary" id="submit-btn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.2"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="M21 21l-4.35-4.35"/>
+            </svg>
+            Analyse email
+          </button>
+        </div>
+      </form>
+
+    </div>
+
+    <p class="footer-note">
+      <span class="footer-dot"></span>
+      Your email text is never stored or shared
+    </p>
+  </div>
+
+  <script>
+    const input = document.getElementById('email-input');
+    const counter = document.getElementById('char-count');
+    const btn = document.getElementById('submit-btn');
+    const form = document.getElementById('scan-form');
+    const card = document.getElementById('main-card');
+
+    input.addEventListener('input', () => {
+      const len = input.value.length;
+      counter.textContent = len.toLocaleString() + ' chars';
+    });
+
+    form.addEventListener('submit', () => {
+      btn.disabled = true;
+      btn.innerHTML = `
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"
+             style="animation: spin 0.8s linear infinite">
+          <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+        </svg>
+        Scanning…
+      `;
+      card.classList.add('scanning-state');
+    });
+
+    function clearForm() {
+      input.value = '';
+      counter.textContent = '0 chars';
+      input.focus();
+    }
+  </script>
+
+  <style>
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  </style>
+
+</body>
+</html>

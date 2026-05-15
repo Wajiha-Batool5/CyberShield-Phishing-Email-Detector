@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Result — Phishing Detector</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <div class="page-wrapper">
+    <div class="card">
+
+      <!-- Verdict row -->
+      <div class="result-header">
+        {% if label == "PHISHING" %}
+          <span class="verdict-badge danger">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.2"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            Phishing detected
+          </span>
+        {% else %}
+          <span class="verdict-badge safe">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.2"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <polyline points="9 12 11 14 15 10"/>
+            </svg>
+            Email looks safe
+          </span>
+        {% endif %}
+        <span class="scan-time">Scanned just now</span>
+      </div>
+
+      <!-- Metrics -->
+      <div class="metric-grid">
+        <div class="metric">
+          <p class="metric-label">Verdict</p>
+          <p class="metric-val {% if label == 'PHISHING' %}danger{% else %}safe{% endif %}">
+            {{ label }}
+          </p>
+        </div>
+        <div class="metric">
+          <p class="metric-label">Confidence</p>
+          <p class="metric-val neutral">{{ score }}%</p>
+        </div>
+        <div class="metric">
+          <p class="metric-label">Risk level</p>
+          <p class="metric-val {% if risk == 'HIGH' %}danger{% else %}safe{% endif %}">
+            {{ risk }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Risk bar -->
+      <div class="risk-bar-section">
+        <div class="risk-bar-label-row">
+          <span class="risk-bar-title">Threat score</span>
+          <span class="risk-bar-pct">{{ score }}%</span>
+        </div>
+        <div class="risk-bar-wrap">
+          <div
+            class="risk-bar-fill {% if label|lower == 'phishing' %}danger{% else %}safe{% endif %}"
+            id="risk-fill"
+            data-width="{{ score }}">
+          </div>
+        </div>
+        <div class="bar-labels">
+          <span>Low risk</span>
+          <span>High risk →</span>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Email preview -->
+      <p class="section-label">Email analysed</p>
+      <div class="email-preview {% if label == 'PHISHING' %}danger-border{% else %}safe-border{% endif %}">{{ email }}</div>
+
+      <!-- Back -->
+      <div class="action-row">
+        <a href="/" class="back-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"/>
+            <polyline points="12 19 5 12 12 5"/>
+          </svg>
+          Check another email
+        </a>
+      </div>
+
+    </div>
+
+    <p class="footer-note">
+      <span class="footer-dot {% if label|lower == 'phishing' %}red-dot{% else %}green-dot{% endif %}"></span>
+      Scan complete — no data retained
+    </p>
+  </div>
+
+  <script>
+    const fill = document.getElementById('risk-fill');
+    const target = parseFloat(fill.getAttribute('data-width'));
+    requestAnimationFrame(() => {
+      setTimeout(() => { fill.style.width = target + '%'; }, 80);
+    });
+  </script>
+
+</body>
+</html>
