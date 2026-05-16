@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Email Phishing Detector</title>
+  <title>URL Phishing Detector</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
@@ -16,25 +16,32 @@
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
                stroke="currentColor" stroke-width="1.8"
                stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            <polyline points="9 12 11 14 15 10"/>
+            <circle cx="11" cy="11" r="8"/>
+            <path d="M21 21l-4.35-4.35"/>
           </svg>
         </div>
         <div>
-          <h1>Phishing detector</h1>
-          <p class="subtitle">// paste email content to scan for threats</p>
+          <h1>URL detector</h1>
+          <p class="subtitle">// scan URLs for malicious patterns and security threats</p>
         </div>
       </div>
 
-      <form action="/predict_email" method="POST" id="scan-form">
-        <p class="field-label">Email content</p>
-        <div class="textarea-wrap">
-          <textarea
-            name="email"
-            id="email-input"
-            placeholder="Paste the full email body here — headers, links, and all…"
+      {% if error %}
+        <div class="error-box">
+          {{ error }}
+        </div>
+      {% endif %}
+
+      <form action="/predict_url" method="POST" id="scan-form">
+        <p class="field-label">Enter URL</p>
+        <div class="input-wrap">
+          <input
+            type="text"
+            name="url"
+            id="url-input"
+            placeholder="https://example.com or example.com"
             required
-          ></textarea>
+          />
           <span class="char-count" id="char-count">0 chars</span>
         </div>
 
@@ -56,30 +63,34 @@
               <circle cx="11" cy="11" r="8"/>
               <path d="M21 21l-4.35-4.35"/>
             </svg>
-            Analyse email
+            Analyse URL
           </button>
         </div>
       </form>
 
-      <!-- Navigation Links -->
-      <div class="nav-links-section">
-        <a href="/" class="nav-link-btn home">
+      <div class="info-box">
+        <p><strong>ℹ️ Safe to use:</strong> Your URL is never logged or shared. Analysis happens locally.</p>
+      </div>
+
+      <!-- Navigation buttons -->
+      <div class="nav-buttons-row">
+        <a href="/" class="nav-btn">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-               stroke="currentColor" stroke-width="2"
+               stroke="currentColor" stroke-width="2.2"
                stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-            <polyline points="9 22 9 12 15 12 15 22"/>
+            <line x1="19" y1="12" x2="5" y2="12"/>
+            <polyline points="12 19 5 12 12 5"/>
           </svg>
           Back to Home
         </a>
-        <a href="/url" class="nav-link-btn url">
+        <a href="/email" class="nav-btn">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
                stroke="currentColor" stroke-width="2"
                stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"/>
-            <path d="M21 21l-4.35-4.35"/>
+            <rect x="2" y="4" width="20" height="16" rx="2"/>
+            <path d="M22 4l-10 8L2 4"/>
           </svg>
-          Check URL
+          Check Email
         </a>
       </div>
 
@@ -87,12 +98,12 @@
 
     <p class="footer-note">
       <span class="footer-dot"></span>
-      Your email text is never stored or shared
+      Your URL is never stored or shared
     </p>
   </div>
 
   <script>
-    const input = document.getElementById('email-input');
+    const input = document.getElementById('url-input');
     const counter = document.getElementById('char-count');
     const btn = document.getElementById('submit-btn');
     const form = document.getElementById('scan-form');
@@ -103,7 +114,12 @@
       counter.textContent = len.toLocaleString() + ' chars';
     });
 
-    form.addEventListener('submit', () => {
+    form.addEventListener('submit', (e) => {
+      if (!input.value.trim()) {
+        e.preventDefault();
+        alert('Please enter a URL');
+        return;
+      }
       btn.disabled = true;
       btn.innerHTML = `
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -129,57 +145,90 @@
       to { transform: rotate(360deg); }
     }
 
-    .nav-links-section {
-      display: flex;
-      gap: 12px;
-      margin-top: 24px;
-      padding-top: 16px;
-      border-top: 1px solid var(--border);
+    .input-wrap {
+      position: relative;
+      margin-bottom: 20px;
     }
 
-    .nav-link-btn {
-      flex: 1;
+    .input-wrap input {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-family: var(--mono);
+      font-size: 14px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .input-wrap input:focus {
+      outline: none;
+      border-color: var(--amber);
+      background: var(--surface-hover);
+    }
+
+    .input-wrap input::placeholder {
+      color: var(--text-tertiary);
+    }
+
+    .info-box {
+      background: var(--surface-hover);
+      border-left: 3px solid var(--amber);
+      padding: 12px 16px;
+      border-radius: 4px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin: 20px 0;
+    }
+
+    .error-box {
+      background: var(--red-dim);
+      border: 1px solid var(--red);
+      color: var(--red);
       padding: 12px 16px;
       border-radius: 8px;
-      text-decoration: none;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    .nav-buttons-row {
       display: flex;
+      gap: 12px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      flex: 1;
+      min-width: 120px;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      font-size: 13px;
-      font-weight: 500;
-      transition: all 0.3s;
-      border: 1px solid var(--border);
-    }
-
-    .nav-link-btn.home {
-      color: var(--text-secondary);
-      background: transparent;
-    }
-
-    .nav-link-btn.home:hover {
+      padding: 10px 16px;
       background: var(--surface-hover);
-      color: var(--text-primary);
-      border-color: var(--border-mid);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s;
     }
 
-    .nav-link-btn.url {
-      color: var(--ink);
-      background: var(--amber);
+    .nav-btn:hover {
       border-color: var(--amber);
+      color: var(--amber);
+      background: var(--surface);
     }
 
-    .nav-link-btn.url:hover {
-      background: var(--amber);
-      opacity: 0.9;
-    }
-
-    @media (max-width: 480px) {
-      .nav-links-section {
+    @media (max-width: 768px) {
+      .nav-buttons-row {
         flex-direction: column;
       }
 
-      .nav-link-btn {
+      .nav-btn {
         width: 100%;
       }
     }

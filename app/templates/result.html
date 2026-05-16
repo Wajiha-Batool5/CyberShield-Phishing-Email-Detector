@@ -83,9 +83,18 @@
       <p class="section-label">Email analysed</p>
       <div class="email-preview {% if label == 'PHISHING' %}danger-border{% else %}safe-border{% endif %}">{{ email }}</div>
 
-      <!-- Back -->
-      <div class="action-row">
-        <a href="/" class="back-link">
+      <!-- Navigation Links -->
+      <div class="action-buttons">
+        <a href="/" class="action-btn home-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+          Back to Home
+        </a>
+        <a href="/email" class="action-btn another-email-btn">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
                stroke="currentColor" stroke-width="2.2"
                stroke-linecap="round" stroke-linejoin="round">
@@ -93,6 +102,15 @@
             <polyline points="12 19 5 12 12 5"/>
           </svg>
           Check another email
+        </a>
+        <a href="/url" class="action-btn url-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="M21 21l-4.35-4.35"/>
+          </svg>
+          Check URL
         </a>
       </div>
 
@@ -111,6 +129,86 @@
       setTimeout(() => { fill.style.width = target + '%'; }, 80);
     });
   </script>
+
+  <style>
+    .action-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .action-btn {
+      padding: 12px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.3s;
+      border: 1px solid var(--border);
+      cursor: pointer;
+    }
+
+    .action-btn.home-btn {
+      color: var(--text-secondary);
+      background: transparent;
+    }
+
+    .action-btn.home-btn:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+      border-color: var(--border-mid);
+    }
+
+    .action-btn.another-email-btn {
+      color: var(--text-secondary);
+      background: transparent;
+    }
+
+    .action-btn.another-email-btn:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+      border-color: var(--border-mid);
+    }
+
+    .action-btn.url-btn {
+      color: var(--ink);
+      background: var(--amber);
+      border-color: var(--amber);
+    }
+
+    .action-btn.url-btn:hover {
+      background: var(--amber);
+      opacity: 0.9;
+    }
+
+    @media (max-width: 768px) {
+      .action-buttons {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .action-btn {
+        font-size: 12px;
+        padding: 10px 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .action-buttons {
+        grid-template-columns: 1fr;
+      }
+
+      .action-btn {
+        width: 100%;
+      }
+    }
+  </style>
 
 </body>
 </html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CyberShield - Phishing Detector</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <div class="page-wrapper">
+    
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="nav-container">
+        <div class="logo">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          <span>CyberShield</span>
+        </div>
+        <ul class="nav-links">
+          <li><a href="/" class="nav-link active">Home</a></li>
+          <li><a href="/email" class="nav-link">Email Check</a></li>
+          <li><a href="/url" class="nav-link">URL Check</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="hero-section">
+      <div class="hero-content">
+        <h1>Phishing Detection System</h1>
+        <p class="hero-subtitle">Detect phishing emails and malicious URLs in seconds</p>
+        
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-icon email-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                <path d="M22 4l-10 8L2 4"/>
+              </svg>
+            </div>
+            <h3>Email Scanner</h3>
+            <p>Analyze email content using AI-powered machine learning</p>
+            <a href="/email" class="feature-btn">Scan Email →</a>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon url-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="M21 21l-4.35-4.35"/>
+              </svg>
+            </div>
+            <h3>URL Scanner</h3>
+            <p>Check URLs for malicious patterns and security threats</p>
+            <a href="/url" class="feature-btn">Scan URL →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>CyberShield © 2026 | Protecting against phishing threats</p>
+    </footer>
+
+  </div>
+
+  <style>
+    .navbar {
+      background: var(--surface-raised);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--amber);
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 32px;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      color: var(--text-secondary);
+      transition: color 0.3s;
+      font-size: 14px;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      color: var(--amber);
+    }
+
+    .hero-section {
+      padding: 80px 24px;
+      text-align: center;
+    }
+
+    .hero-content h1 {
+      font-size: 48px;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+    }
+
+    .hero-subtitle {
+      font-size: 18px;
+      color: var(--text-secondary);
+      margin-bottom: 48px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin: 60px 0;
+    }
+
+    .feature-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px 24px;
+      text-align: center;
+      transition: transform 0.3s, border-color 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--amber);
+    }
+
+    .feature-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+    }
+
+    .email-icon {
+      background: var(--amber-dim);
+      color: var(--amber);
+    }
+
+    .url-icon {
+      background: var(--green-dim);
+      color: var(--green);
+    }
+
+    .feature-card h3 {
+      font-size: 20px;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+    }
+
+    .feature-card p {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .feature-btn {
+      display: inline-block;
+      padding: 10px 24px;
+      background: var(--amber);
+      color: var(--ink);
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
+
+    .feature-btn:hover {
+      background: var(--amber);
+      opacity: 0.9;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 40px 24px;
+      border-top: 1px solid var(--border);
+      color: var(--text-tertiary);
+      font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .hero-content h1 {
+        font-size: 32px;
+      }
+
+      .nav-links {
+        gap: 16px;
+      }
+    }
+  </style>
+
+</body>
+</html>

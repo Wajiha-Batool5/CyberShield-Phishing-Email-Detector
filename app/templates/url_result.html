@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>URL Scan Result — CyberShield</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <div class="page-wrapper">
+    <div class="card">
+
+      <!-- Verdict row -->
+      <div class="result-header">
+        {% if label == "MALICIOUS" %}
+          <span class="verdict-badge danger">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.2"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            Malicious URL detected
+          </span>
+        {% elif label == "SUSPICIOUS" %}
+          <span class="verdict-badge warning">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.2"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="12"/>
+              <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            Suspicious URL detected
+          </span>
+        {% else %}
+          <span class="verdict-badge safe">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.2"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <polyline points="9 12 11 14 15 10"/>
+            </svg>
+            URL looks safe
+          </span>
+        {% endif %}
+        <span class="scan-time">Scanned just now</span>
+      </div>
+
+      <!-- Metrics -->
+      <div class="metric-grid">
+        <div class="metric">
+          <p class="metric-label">Verdict</p>
+          <p class="metric-val {% if label == 'MALICIOUS' %}danger{% elif label == 'SUSPICIOUS' %}warning{% else %}safe{% endif %}">
+            {{ label }}
+          </p>
+        </div>
+        <div class="metric">
+          <p class="metric-label">Threat Score</p>
+          <p class="metric-val neutral">{{ score }}%</p>
+        </div>
+        <div class="metric">
+          <p class="metric-label">Risk Level</p>
+          <p class="metric-val {% if risk == 'HIGH' %}danger{% elif risk == 'MEDIUM' %}warning{% else %}safe{% endif %}">
+            {{ risk }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Risk bar -->
+      <div class="risk-bar-section">
+        <div class="risk-bar-label-row">
+          <span class="risk-bar-title">Threat Score</span>
+          <span class="risk-bar-pct">{{ score }}%</span>
+        </div>
+        <div class="risk-bar-wrap">
+          <div
+            class="risk-bar-fill {% if label|lower == 'malicious' %}danger{% elif label|lower == 'suspicious' %}warning{% else %}safe{% endif %}"
+            id="risk-fill"
+            data-width="{{ score }}">
+          </div>
+        </div>
+        <div class="bar-labels">
+          <span>Low risk</span>
+          <span>High risk →</span>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- URL Details -->
+      <div class="details-section">
+        <h3 class="details-title">Scanned URL</h3>
+        <div class="url-display">
+          <code>{{ url }}</code>
+        </div>
+      </div>
+
+      <!-- Threats Found -->
+      {% if threats %}
+      <div class="threats-section">
+        <h3 class="threats-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 8px;">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          Threats Detected
+        </h3>
+        <ul class="threats-list">
+          {% for threat in threats %}
+          <li class="threat-item">{{ threat }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <!-- Recommendation -->
+      <div class="recommendation-box {% if label|lower == 'malicious' %}danger-box{% elif label|lower == 'suspicious' %}warning-box{% else %}safe-box{% endif %}">
+        {% if label == "MALICIOUS" %}
+          <strong>⛔ Do not visit this URL.</strong> It shows multiple signs of being malicious. Avoid clicking any links to this domain.
+        {% elif label == "SUSPICIOUS" %}
+          <strong>⚠️ Be cautious with this URL.</strong> It has some suspicious characteristics. Verify its authenticity before visiting.
+        {% else %}
+          <strong>✅ This URL appears safe.</strong> It passed the security checks, but always stay vigilant.
+        {% endif %}
+      </div>
+
+      <!-- Navigation buttons -->
+      <div class="action-row">
+        <a href="/" class="back-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"/>
+            <polyline points="12 19 5 12 12 5"/>
+          </svg>
+          Back to Home
+        </a>
+        <a href="/url" class="back-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="M21 21l-4.35-4.35"/>
+          </svg>
+          Scan Another URL
+        </a>
+        <a href="/email" class="back-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2"/>
+            <path d="M22 4l-10 8L2 4"/>
+          </svg>
+          Check Email
+        </a>
+      </div>
+
+    </div>
+
+    <p class="footer-note">
+      <span class="footer-dot {% if label|lower == 'malicious' %}red-dot{% elif label|lower == 'suspicious' %}red-dot{% else %}green-dot{% endif %}"></span>
+      Scan complete — no data retained
+    </p>
+  </div>
+
+  <script>
+    const fill = document.getElementById('risk-fill');
+    const target = parseFloat(fill.getAttribute('data-width'));
+    requestAnimationFrame(() => {
+      setTimeout(() => { fill.style.width = target + '%'; }, 80);
+    });
+  </script>
+
+  <style>
+    .url-display {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+    }
+
+    .url-display code {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-secondary);
+      word-break: break-all;
+    }
+
+    .details-section {
+      margin-bottom: 20px;
+    }
+
+    .details-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+    }
+
+    .threats-section {
+      margin: 24px 0;
+      padding: 20px;
+      background: var(--surface-hover);
+      border-radius: 8px;
+      border-left: 3px solid var(--red);
+    }
+
+    .threats-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+    }
+
+    .threats-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .threat-item {
+      color: var(--text-secondary);
+      font-size: 13px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+    }
+
+    .threat-item:last-child {
+      border-bottom: none;
+    }
+
+    .threat-item::before {
+      content: '⚠️';
+      margin-right: 8px;
+    }
+
+    .recommendation-box {
+      padding: 16px;
+      border-radius: 8px;
+      margin: 20px 0;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .danger-box {
+      background: var(--red-dim);
+      border-left: 3px solid var(--red);
+      color: var(--red);
+    }
+
+    .warning-box {
+      background: var(--amber-dim);
+      border-left: 3px solid var(--amber);
+      color: var(--amber);
+    }
+
+    .safe-box {
+      background: var(--green-dim);
+      border-left: 3px solid var(--green);
+      color: var(--green);
+    }
+
+    .action-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+
+    .back-link {
+      flex: 1;
+      min-width: 120px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: var(--surface-hover);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .back-link:hover {
+      border-color: var(--amber);
+      color: var(--amber);
+      background: var(--surface);
+    }
+
+    @media (max-width: 768px) {
+      .action-row {
+        flex-direction: column;
+      }
+
+      .back-link {
+        width: 100%;
+      }
+    }
+  </style>
+
+</body>
+</html>
